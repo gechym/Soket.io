@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import app from './app';
+import { Server } from 'socket.io';
 
 const DB = process.env.DATABASE_URL.replace('<PASSWORD>', process.env.PASSWORD);
 const DATABASE_LOCAL = process.env.DATABASE_LOCAL;
@@ -17,6 +18,20 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+const socket = new Server(app, {
+  cors: {
+    origin: process.env.HOST_CLIENT,
+  },
+});
+
+socket.on('connection', (socket) => {
+  console.log(socket.id);
+
+  socket.disconnect('disconnect', () => {
+    console.log(`🤕${socket.id} disconnected`);
+  });
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
