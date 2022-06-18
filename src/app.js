@@ -12,6 +12,7 @@ import { createServer } from 'http';
 
 import handleError from './controller/HandleError';
 import AppError from './util/AppError';
+import productRouter from './routes/productRouter';
 
 const app = express();
 
@@ -85,16 +86,7 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-app.use((req, res, next) => {
-  console.log('hello middleware 😘');
-  req.requestTime = new Date().toISOString();
-  console.log(req.headers);
-  next();
-});
-
-app.use('/', (req, res, next) => {
-  return res.status(200).json('hello world');
-});
+app.use('/api/v1/products', productRouter);
 
 app.use('*', (req, res, next) => {
   return next(new AppError('404', 404));
