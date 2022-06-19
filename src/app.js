@@ -81,7 +81,7 @@ app.use(
 //2 limiter request something ip
 const limiter = rateLimit({
   // midleware giới hạn các lần gửi req quá nhiều từ một ip nào đó
-  max: 100,
+  max: 100000000000000000000,
   windowMs: 60 * 60 * 1000, // 60 minutes,
   message: 'Too many requests from this ip , please try again in a hour!',
 });
