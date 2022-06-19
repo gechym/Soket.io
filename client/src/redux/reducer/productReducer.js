@@ -1,9 +1,10 @@
 import * as productConst from '../constant/ProductConst';
 
 const initialState = {
-  data: [],
+  data: undefined,
   loading: false,
   error: undefined,
+  socket: undefined,
 };
 
 const productReducer = (state = initialState, action) => {
@@ -20,6 +21,7 @@ const productReducer = (state = initialState, action) => {
     case productConst.fetch_request:
       return {
         ...state,
+        socket: action.payload,
         loading: true,
       };
 

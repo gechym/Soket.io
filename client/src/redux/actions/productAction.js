@@ -1,8 +1,8 @@
 import * as productConst from '~/Redux/constant/ProductConst';
 
 // Fetch Users
-export const fetch_request = () => {
-  return { type: productConst.fetch_request };
+export const fetch_request = (socket) => {
+  return { type: productConst.fetch_request, payload: socket };
 };
 
 export const fetch_success = (products) => {

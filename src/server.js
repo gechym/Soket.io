@@ -26,9 +26,13 @@ const socket = new Server(app, {
 });
 
 socket.on('connection', (socket) => {
-  console.log(socket.id);
+  console.log(`✅ ${socket.id}`);
 
-  socket.disconnect('disconnect', () => {
+  socket.on('join_product', (data) => {
+    console.log(data);
+  });
+
+  socket.on('disconnect', () => {
     console.log(`🤕${socket.id} disconnected`);
   });
 });
