@@ -13,6 +13,7 @@ import { createServer } from 'http';
 import handleError from './controller/HandleError';
 import AppError from './util/AppError';
 import productRouter from './routes/productRouter';
+import commentRouter from './routes/commentRouter';
 
 const app = express();
 
@@ -87,6 +88,7 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 app.use('/api/v1/products', productRouter);
+app.use('/api/v1/comments', commentRouter);
 
 app.use('*', (req, res, next) => {
   return next(new AppError('404', 404));
