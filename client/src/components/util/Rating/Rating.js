@@ -1,19 +1,19 @@
 import React from 'react';
 import './Rating.css';
 
-let rate = 0;
 function Rating({ props }) {
-  if (props?.numReviews) {
-    rate = 100 - (props?.rating / props?.numReviews) * 20;
-  } else {
-    rate = 100 - props?.rating * 20;
-  }
+  const rate = 100 - (props?.rating / props?.numReviews) * 20;
 
   const style_star = {
     clipPath: props?.rating === 0 ? `inset(0 100% 0 0)` : `inset(0 ${rate}% 0 0)`,
+    position: 'absolute',
+    top: '0',
+    left: '0',
+    width: '115px',
+    overflow: 'hidden',
   };
 
-  console.log(style_star, props);
+  console.log(style_star);
 
   return (
     <div className="rating">
