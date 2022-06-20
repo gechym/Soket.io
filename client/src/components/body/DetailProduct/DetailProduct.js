@@ -1,58 +1,46 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { userRemainingSelector } from '~/redux/userSelector';
 import { useParams } from 'react-router-dom';
 
 import DetailProductCard from '~/components/util/DetailProductCard/DetailProductCard';
 import FormInput from '~/components/util/FormInput/FormInput';
-import { getComments } from '~/API/commentApi';
 import CommentItem from '~/components/util/CommentItem/CommentItem';
+import useInfinityloading from '~/hooks/useInfinityloadingProduct';
 
 function DetailProduct() {
   const { id } = useParams();
-  const btnRef = useRef();
   const { socket, data } = useSelector(userRemainingSelector);
   const [product, setProduct] = useState();
+
   const [comments, setComments] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [rating, setRating] = useState(0);
+
   const [limit] = useState(5);
-  const [page, setPage] = useState(1);
   const [firstLoad, setFirstLoad] = useState(false);
   const [stop, setStop] = useState(false);
 
+  const { commentsApi, loading, btnRender } = useInfinityloading({
+    id: id,
+    limit: limit,
+    depens: [id],
+    otp: { stop: stop, firstLoad: firstLoad },
+  });
+
   useEffect(() => {
-    const fetchApi = async () => {
-      setLoading(true);
+    setComments([]);
+    setStop(false);
+    setFirstLoad(false);
+  }, [id]);
 
-      try {
-        const res = await getComments(id, {
-          params: {
-            product_id: id,
-            page: page,
-            limit: limit,
-          },
-        });
+  useEffect(() => {
+    setComments((prev) => [...prev, ...commentsApi]);
+    setFirstLoad(true);
+    if (commentsApi?.length < limit) setStop(true);
+    else setStop(false);
+  }, [commentsApi, limit]);
 
-        if (res.data.comments.length < limit) {
-          setStop(true);
-        }
-        setLoading(false);
-        setComments((prev) => [...prev, ...res.data.comments]);
-        setFirstLoad(true);
-      } catch (error) {
-        setLoading(false);
-        if (error.response?.data.message) {
-          console.log(error.response?.data.message);
-        } else {
-          console.log(error.message);
-        }
-      }
-    };
-
-    fetchApi();
-  }, [id, limit, page]);
-
+  // Realtime
   useEffect(() => {
     socket?.emit('join_product', id);
 
@@ -60,30 +48,6 @@ function DetailProduct() {
       setProduct(data.data.products.find((prod) => prod._id === id));
     }
   }, [socket, id, data]);
-
-  const handleLoadMore = useCallback(() => {
-    console.log(stop);
-    if (stop) return;
-    setPage((prev) => prev + 1);
-  }, [stop]);
-
-  useEffect(() => {
-    const btn = btnRef.current;
-
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && firstLoad) {
-        handleLoadMore();
-      }
-    });
-
-    if (btn) {
-      observer.observe(btn);
-    }
-
-    return () => {
-      if (btn) observer.unobserve(btn);
-    }; //FIXME: Cần có hàm xóa để tránh rò rỉ
-  }, [firstLoad, handleLoadMore]);
 
   useEffect(() => {
     socket?.on('sendCommentToClient', (newComment) => {
@@ -122,9 +86,7 @@ function DetailProduct() {
           })}
         </div>
       </div>
-      <button ref={btnRef} style={{ opacity: 0 }}>
-        Load more
-      </button>
+      {btnRender()}
     </div>
   );
 }
