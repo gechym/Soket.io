@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import * as apiProduct from '~/API/productApi';
 import './FormInput.css';
 
@@ -16,9 +16,13 @@ function FormInput({ id, socket, rating }) {
 
     const createdAt = new Date().toISOString();
 
-    // socket.emit('createComment', {
-    //     username, content, product_id: id, createdAt, rating, send
-    // })
+    socket.emit('createComment', {
+      username,
+      content,
+      product_id: id,
+      createdAt,
+      rating,
+    });
 
     if (rating && rating !== 0) {
       try {

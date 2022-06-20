@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import './productCard.css';
 
 const ProductCard = ({ product }) => {
-  console.log(product);
   return (
     <div className="product_card">
       <img src={product.images.url} alt="" />

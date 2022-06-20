@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import app from './app';
-import { Server } from 'socket.io';
+import Comment from './module/comment';
 
 const DB = process.env.DATABASE_URL.replace('<PASSWORD>', process.env.PASSWORD);
 const DATABASE_LOCAL = process.env.DATABASE_LOCAL;
@@ -19,17 +19,54 @@ mongoose
     console.log(err);
   });
 
-const socket = new Server(app, {
+const io = require('socket.io')(app, {
   cors: {
     origin: process.env.HOST_CLIENT,
   },
 });
 
-socket.on('connection', (socket) => {
+let users = [];
+io.on('connection', (socket) => {
   console.log(`✅ ${socket.id}`);
 
-  socket.on('join_product', (data) => {
+  socket.on('join_product', (room) => {
+    const user = { id: socket.id, room: room };
+
+    const check = users.every((user) => user.id !== socket.id);
+
+    if (check) {
+      socket.join(room);
+      users.push(user);
+    } else {
+      users.map((user) => {
+        if (user.id === socket.id) {
+          if (user.room !== room) {
+            socket.leave(user.room);
+            socket.join(room);
+            user.room = room;
+          }
+        }
+      });
+    }
+
+    console.log(socket.adapter.rooms);
+  });
+
+  socket.on('createComment', async (data) => {
     console.log(data);
+
+    const { username, content, product_id, createdAt, rating } = data;
+
+    const newComment = new Comment({
+      username,
+      content,
+      product_id,
+      createdAt,
+      rating,
+    });
+
+    await newComment.save();
+    io.to(newComment.product_id).emit('sendCommentToClient', newComment);
   });
 
   socket.on('disconnect', () => {

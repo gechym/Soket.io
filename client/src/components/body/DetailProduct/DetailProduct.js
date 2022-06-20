@@ -5,12 +5,37 @@ import { useParams } from 'react-router-dom';
 
 import DetailProductCard from '~/components/util/DetailProductCard/DetailProductCard';
 import FormInput from '~/components/util/FormInput/FormInput';
+import { getComments } from '~/API/commentApi';
+import CommentItem from '~/components/util/CommentItem/CommentItem';
 
 function DetailProduct() {
   const { id } = useParams();
   const { socket, data } = useSelector(userRemainingSelector);
   const [product, setProduct] = useState();
+  const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [rating, setRating] = useState(0);
+
+  useEffect(() => {
+    const fetchApi = async () => {
+      setLoading(true);
+
+      try {
+        const res = await getComments(id);
+        setLoading(false);
+        setComments(res.data.comments);
+      } catch (error) {
+        setLoading(false);
+        if (error.response?.data.message) {
+          console.log(error.response?.data.message);
+        } else {
+          console.log(error.message);
+        }
+      }
+    };
+
+    fetchApi();
+  }, [id]);
 
   useEffect(() => {
     socket?.emit('join_product', id);
@@ -19,6 +44,12 @@ function DetailProduct() {
       setProduct(data.data.products.find((prod) => prod._id === id));
     }
   }, [socket, id, data]);
+
+  useEffect(() => {
+    socket?.on('sendCommentToClient', (newComment) => {
+      console.log(newComment);
+    });
+  }, [socket]);
 
   return (
     <div className="detail_product_page">
@@ -44,6 +75,12 @@ function DetailProduct() {
         </div>
 
         <FormInput id={id} socket={socket} rating={rating} />
+        <h1>{loading && 'loading'}</h1>
+        <div className="comments_list">
+          {comments.map((cmt) => {
+            return <CommentItem key={cmt._id} comment={cmt} />;
+          })}
+        </div>
       </div>
     </div>
   );
