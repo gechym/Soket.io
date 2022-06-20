@@ -4,7 +4,6 @@ import { userRemainingSelector } from '~/redux/userSelector';
 
 function Products() {
   const { data } = useSelector(userRemainingSelector);
-  console.log(data);
   return (
     <>
       <h2 className="app_title">Realtime website ( chat, comments ... ) with MERN Stack and Socket.io</h2>
