@@ -2,7 +2,14 @@ import React, { useRef, useEffect } from 'react';
 import * as apiProduct from '~/API/productApi';
 import './FormInput.css';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { userRemainingSelector } from '~/redux/userSelector';
+import { getProducts } from '~/redux/thunk/productThunk';
+
 function FormInput({ id, socket, rating }) {
+  const { error, loading } = useSelector(userRemainingSelector);
+  const dispatch = useDispatch();
+
   const nameRef = useRef();
   const contentRef = useRef();
 
@@ -24,6 +31,8 @@ function FormInput({ id, socket, rating }) {
       try {
         const res = await apiProduct.ratingProduct(id, { rating });
         console.log(res);
+
+        dispatch(getProducts(socket));
       } catch (error) {
         if (error.response?.data.message) {
           console.log(error.response?.data.message);
