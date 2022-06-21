@@ -25,6 +25,7 @@ function useInfinityloading({ id, limit, depens, otp }) {
 
       try {
         const res = await getComments(id, {
+          // call api
           params: {
             product_id: id,
             page: page,
