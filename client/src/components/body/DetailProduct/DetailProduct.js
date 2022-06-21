@@ -20,6 +20,7 @@ function DetailProduct() {
   const [firstLoad, setFirstLoad] = useState(false);
   const [stop, setStop] = useState(false);
 
+  //TODO: InfinityLoading
   const { commentsApi, loading, btnRender } = useInfinityloading({
     id: id,
     limit: limit,
@@ -74,7 +75,6 @@ function DetailProduct() {
       {product && <DetailProductCard product={product} />}
       <div className="comments">
         <h2 className="app_title">Realtime website ( chat, comments ... ) with MERN Stack and Socket.io</h2>
-
         <div className="reviews">
           <input type="radio" name="rate" id="rd-5" onChange={() => setRating(5)} />
           <label htmlFor="rd-5" className="fas fa-star"></label>
@@ -91,12 +91,11 @@ function DetailProduct() {
           <input type="radio" name="rate" id="rd-1" onChange={() => setRating(1)} />
           <label htmlFor="rd-1" className="fas fa-star"></label>
         </div>
-
-        <FormInput id={id} socket={socket} rating={rating} />
-
+        <FormInput id={id} socket={socket} rating={rating} /> //TODO: Create comment and emit socket to
+        database
         <div className="comments_list">
           {comments.map((cmt) => {
-            return <CommentItem key={cmt._id} comment={cmt} />;
+            return <CommentItem key={cmt._id} comment={cmt} />; //TODO: foreach Component CommentItem To show all Comments and finityload
           })}
         </div>
         <h1>{loading && 'loading'}</h1>
