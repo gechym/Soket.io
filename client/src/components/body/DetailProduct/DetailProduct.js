@@ -54,6 +54,8 @@ function DetailProduct() {
     socket?.on('sendCommentToClient', (newComment) => {
       setComments((prev) => [newComment, ...prev]);
     });
+
+    return () => socket?.off('sendCommentToClient');
   }, [socket]);
 
   useEffect(() => {
@@ -68,6 +70,8 @@ function DetailProduct() {
         });
       });
     });
+
+    return () => socket?.off('sendReplyToClient');
   }, [socket]);
 
   return (
@@ -91,11 +95,13 @@ function DetailProduct() {
           <input type="radio" name="rate" id="rd-1" onChange={() => setRating(1)} />
           <label htmlFor="rd-1" className="fas fa-star"></label>
         </div>
-        <FormInput id={id} socket={socket} rating={rating} /> //TODO: Create comment and emit socket to
+        <FormInput id={id} socket={socket} rating={rating} />
+        {/* //TODO: Create comment and emit socket to */}
         database
         <div className="comments_list">
           {comments.map((cmt) => {
-            return <CommentItem key={cmt._id} comment={cmt} />; //TODO: foreach Component CommentItem To show all Comments and finityload
+            return <CommentItem key={cmt._id} comment={cmt} />;
+            //  TODO: foreach Component CommentItem To show all Comments and finityload
           })}
         </div>
         <h1>{loading && 'loading'}</h1>

@@ -16,26 +16,23 @@ function CommentItem({ comment }) {
   const [hideReplyComment, setHideReplyComment] = useState([]);
   const [next, setNext] = useState(3);
 
-  const loopWithSlice = useCallback(
-    (next) => {
-      // 1 2 3 4 5 6  || limt = 3
-      // num = 0 ->slice( (6 - (0 + limt) ) , 6 ) -> 4 5 6
-      // num = 1 -> slice( (6 -  (1 + limt)) , 6 ) -> 3 4 5 6
-      // num = 2 -> slice( (6 -  (2 + limt)) , 6 ) -> 2 3 4 5 6
-      // num = 3 -> slice( (6 -  (3 + limt)) , 6 ) ->1 2 3 4 5 6
-      // num = 4 -> slice(6 - (4 + limt), 6 ) ~ slice(0, 6) -> 1 2 3 4 5 6
+  const loopWithSlice = useCallback(() => {
+    // 1 2 3 4 5 6  || limt = 3
+    // num = 0 ->slice( (6 - (0 + limt) ) , 6 ) -> 4 5 6
+    // num = 1 -> slice( (6 -  (1 + limt)) , 6 ) -> 3 4 5 6
+    // num = 2 -> slice( (6 -  (2 + limt)) , 6 ) -> 2 3 4 5 6
+    // num = 3 -> slice( (6 -  (3 + limt)) , 6 ) ->1 2 3 4 5 6
+    // num = 4 -> slice(6 - (4 + limt), 6 ) ~ slice(0, 6) -> 1 2 3 4 5 6
 
-      let start = comment.reply.length - next < 0 ? 0 : comment.reply.length - next;
+    let start = comment.reply.length - next < 0 ? 0 : comment.reply.length - next;
 
-      showComments = comment.reply.slice(start, comment.reply.length);
+    showComments = comment.reply.slice(start, comment.reply.length);
 
-      setHideReplyComment(start);
-      setReplyComment(showComments);
+    setHideReplyComment(start);
+    setReplyComment(showComments);
 
-      console.log(showComments);
-    },
-    [comment.reply, next],
-  );
+    console.log(showComments);
+  }, [comment.reply, next]);
 
   const loadMoreRepComment = () => {
     loopWithSlice(next);
@@ -44,7 +41,7 @@ function CommentItem({ comment }) {
 
   useEffect(() => {
     loopWithSlice(next);
-  }, [loopWithSlice]);
+  }, [loopWithSlice, next]);
 
   const handleReply = (name) => {
     setName(name);

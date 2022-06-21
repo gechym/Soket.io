@@ -49,7 +49,7 @@ io.on('connection', (socket) => {
       });
     }
 
-    console.log(socket.adapter.rooms);
+    console.log(users);
   });
 
   socket.on('createComment', async (data) => {
@@ -80,6 +80,7 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log(`🤕${socket.id} disconnected`);
+    users = users.filter((user) => user.id !== socket.id);
   });
 });
 
