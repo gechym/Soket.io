@@ -53,10 +53,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('createComment', async (data) => {
-    console.log(data);
-
-    const { username, content, product_id, createdAt, rating } = data;
-
+    const { username, content, product_id, createdAt, rating, send } = data;
     const newComment = new Comment({
       username,
       content,
@@ -65,8 +62,20 @@ io.on('connection', (socket) => {
       rating,
     });
 
-    await newComment.save();
-    io.to(newComment.product_id).emit('sendCommentToClient', newComment);
+    if (send === 'replyComment') {
+      const { _id, username, content, product_id, createdAt, rating } = newComment;
+      const id_comment = product_id;
+      const comment = await Comment.findById(id_comment);
+
+      if (comment) {
+        comment.reply.push({ _id, username, content, createdAt, rating });
+        await comment.save();
+        io.to(comment.product_id).emit('sendReplyToClient', comment);
+      }
+    } else {
+      await newComment.save();
+      io.to(newComment.product_id).emit('sendCommentToClient', newComment);
+    }
   });
 
   socket.on('disconnect', () => {

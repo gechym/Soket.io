@@ -55,6 +55,20 @@ function DetailProduct() {
     });
   }, [socket]);
 
+  useEffect(() => {
+    socket?.on('sendReplyToClient', (comment) => {
+      setComments((prev) => {
+        return prev.map((cm) => {
+          if (cm._id === comment._id) {
+            cm.reply = comment.reply;
+            return cm;
+          }
+          return cm;
+        });
+      });
+    });
+  }, [socket]);
+
   return (
     <div className="detail_product_page">
       {product && <DetailProductCard product={product} />}
@@ -79,12 +93,13 @@ function DetailProduct() {
         </div>
 
         <FormInput id={id} socket={socket} rating={rating} />
-        <h1>{loading && 'loading'}</h1>
+
         <div className="comments_list">
           {comments.map((cmt) => {
             return <CommentItem key={cmt._id} comment={cmt} />;
           })}
         </div>
+        <h1>{loading && 'loading'}</h1>
       </div>
       {btnRender()}
     </div>

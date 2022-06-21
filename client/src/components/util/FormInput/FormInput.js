@@ -1,10 +1,22 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import * as apiProduct from '~/API/productApi';
 import './FormInput.css';
 
-function FormInput({ id, socket, rating }) {
+function FormInput({ id, socket, rating, setReply, send, name }) {
   const nameRef = useRef();
   const contentRef = useRef();
+
+  useEffect(() => {
+    if (name) {
+      contentRef.current.innerHTML = `
+              <a href="#!"
+                  style="color: crimson;
+                  font-weight: 600;
+                  text-transform: capitalize;"
+              >${name}: </a>
+          `;
+    }
+  }, [name]);
 
   const commentSubmit = async () => {
     const username = nameRef.current.value;
@@ -22,6 +34,7 @@ function FormInput({ id, socket, rating }) {
       product_id: id,
       createdAt,
       rating,
+      send,
     });
 
     if (rating && rating !== 0) {
@@ -35,6 +48,10 @@ function FormInput({ id, socket, rating }) {
           console.log(error.message);
         }
       }
+    }
+
+    if (setReply) {
+      setReply(false);
     }
   };
   return (
