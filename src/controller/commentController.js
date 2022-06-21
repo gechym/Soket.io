@@ -24,7 +24,7 @@ const APIfeature = async (resQuery, model) => {
     const sortBy = resQuery.sort.split(',').join(' ');
     query = query.sort(sortBy);
   } else {
-    query = query.sort('createdAt');
+    query = query.sort('-createdAt');
   }
 
   const countData = (await query).length; // return
