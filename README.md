@@ -15,7 +15,7 @@
 
 ### Step 2 : 
 - change "Script" 
-
+```
 |"scripts": {
 |    "test": "echo \"Error: no test specified\" && exit 1",
 |    "build-watch": "babel --watch src --out-dir dist",
@@ -32,7 +32,7 @@
 |  "scripts": {
 |    "start": "nodemon dist/server.js",
 |  },
-
+```
 
 
 ### Step 3 : 
