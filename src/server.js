@@ -21,7 +21,7 @@ mongoose
 
 const io = require('socket.io')(app, {
   cors: {
-    origin: process.env.HOST_CLIENT,
+    origin: '*',
   },
 });
 

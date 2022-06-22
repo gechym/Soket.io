@@ -1,4 +1,5 @@
 import io from 'socket.io-client';
+import axios from 'axios';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userRemainingSelector } from './redux/userSelector';
@@ -9,6 +10,8 @@ import DetailProduct from '~/components/body/DetailProduct/DetailProduct';
 import Products from '~/components/body/Products/Products';
 
 import './App.css';
+
+axios.defaults.baseURL = 'http://localhost:8080/api/v1/';
 
 function App() {
   const { error, loading } = useSelector(userRemainingSelector);
