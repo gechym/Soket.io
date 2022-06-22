@@ -16,22 +16,22 @@
 ### Step 2 : 
 - change "Script" 
 
-"scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build-watch": "babel --watch src --out-dir dist",
-    "build-server": "babel src --out-dir dist",
-    "build-client": "cd client && npm i && npm run build",
-    "start": "nodemon dist/server.js",
-    "build": "concurrently \"npm run build-server\" \"npm run build-client\""
-  },
-
-     |
-     |
-     V
-
-  "scripts": {
-    "start": "nodemon dist/server.js",
-  },
+|"scripts": {
+|    "test": "echo \"Error: no test specified\" && exit 1",
+|    "build-watch": "babel --watch src --out-dir dist",
+|    "build-server": "babel src --out-dir dist",
+|    "build-client": "cd client && npm i && npm run build",
+|    "start": "nodemon dist/server.js",
+|    "build": "concurrently \"npm run build-server\" \"npm run build-client\""
+|  },
+|
+|     |
+|     |
+|     V
+|
+|  "scripts": {
+|    "start": "nodemon dist/server.js",
+|  },
 
 
 
