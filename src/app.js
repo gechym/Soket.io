@@ -59,13 +59,16 @@ app.use('/api/v1/products', productRouter);
 
 app.use('/api/v1/comments', commentRouter);
 
-app.use('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build/index.html'));
-});
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/build'))); // khai các file¿
+  app.use('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+  });
+}
 
-// app.use('*', (req, res, next) => {
-//   return next(new AppError('404', 404));
-// });
+app.use('*', (req, res, next) => {
+  return next(new AppError('404', 404));
+});
 
 app.use(handleError());
 

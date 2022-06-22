@@ -10,9 +10,7 @@
     "build-server": "babel src --out-dir dist",
     "build-client": "cd client && npm i && npm run build",
     "start": "nodemon dist/server.js",
-    "start-client": "cd client && npm start",
-    "dev": "concurrently \"npm run build-watch\" \"npm run start\" \"npm run start-client\"",
-    "build": "concurrently \"npm run build-server\" \"npm run build-client\" \"npm run start\""
+    "build": "concurrently \"npm run build-server\" \"npm run build-client\""
   },
   "author": "",
   "license": "ISC",
