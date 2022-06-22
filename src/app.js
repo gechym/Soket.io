@@ -1,5 +1,6 @@
 require('dotenv').config({ path: './config.env' });
 import express from 'express';
+import path from 'path';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
@@ -29,8 +30,6 @@ app.use(
 
 app.use(cookieParser());
 
-app.use(express.static(`${__dirname}/public`)); // khai các file
-
 // Bảo mật app
 app.use(hpp()); // chặn 2 lần query parama giống nhau vd :  /api/v1/users?sort=price&sort=duration
 
@@ -51,14 +50,22 @@ const limiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 60 minutes,
   message: 'Too many requests from this ip , please try again in a hour!',
 });
+
+app.use(express.static(path.join(__dirname, '../client/build'))); // khai các file¿
+
 app.use('/api/', limiter);
 
 app.use('/api/v1/products', productRouter);
+
 app.use('/api/v1/comments', commentRouter);
 
-app.use('*', (req, res, next) => {
-  return next(new AppError('404', 404));
+app.use('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
+
+// app.use('*', (req, res, next) => {
+//   return next(new AppError('404', 404));
+// });
 
 app.use(handleError());
 

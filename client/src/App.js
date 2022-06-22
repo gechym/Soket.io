@@ -11,7 +11,7 @@ import Products from '~/components/body/Products/Products';
 
 import './App.css';
 
-axios.defaults.baseURL = 'http://localhost:8080/api/v1/';
+axios.defaults.baseURL = 'http://localhost:8080';
 
 function App() {
   const { error, loading } = useSelector(userRemainingSelector);
